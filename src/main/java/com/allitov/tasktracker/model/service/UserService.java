@@ -7,11 +7,11 @@ public interface UserService<T, ID> {
 
     Flux<T> findAll();
 
-    Mono<T> findById(Mono<ID> id);
+    Mono<T> findById(ID id);
 
-    Mono<T> create(Mono<T> user);
+    Mono<T> create(T user);
 
-    Mono<T> updateById(Mono<ID> id, Mono<T> user);
+    Mono<T> update(T user);
 
-    Mono<Void> deleteById(Mono<ID> id);
+    Mono<Void> deleteById(ID id);
 }

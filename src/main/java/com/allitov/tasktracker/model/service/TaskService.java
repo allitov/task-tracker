@@ -7,13 +7,13 @@ public interface TaskService<T, ID> {
 
     Flux<T> findAll();
 
-    Mono<T> findById(Mono<ID> id);
+    Mono<T> findById(ID id);
 
-    Mono<T> create(Mono<T> task);
+    Mono<T> create(T task);
 
-    Mono<T> updateById(Mono<ID> id, Mono<T> task);
+    Mono<T> updateById(ID id, T task);
 
-    Mono<T> addObserverById(Mono<ID> taskId, Mono<ID> observerId);
+    Mono<T> addObserverById(ID taskId, ID observerId);
 
-    Mono<Void> deleteById(Mono<ID> id);
+    Mono<Void> deleteById(ID id);
 }
