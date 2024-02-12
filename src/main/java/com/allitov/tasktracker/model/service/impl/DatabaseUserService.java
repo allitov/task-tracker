@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class DatabaseUserService implements UserService<User, String> {
+public class DatabaseUserService implements UserService {
 
     private final UserRepository userRepository;
 

@@ -1,17 +1,18 @@
 package com.allitov.tasktracker.model.service;
 
+import com.allitov.tasktracker.model.entity.User;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface UserService<T, ID> {
+public interface UserService {
 
-    Flux<T> findAll();
+    Flux<User> findAll();
 
-    Mono<T> findById(ID id);
+    Mono<User> findById(String id);
 
-    Mono<T> create(T user);
+    Mono<User> create(User user);
 
-    Mono<T> update(T user);
+    Mono<User> update(User user);
 
-    Mono<Void> deleteById(ID id);
+    Mono<Void> deleteById(String id);
 }
