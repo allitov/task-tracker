@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -25,7 +24,7 @@ public class UserController {
     @GetMapping
     public Mono<ResponseEntity<UserListResponse>> getAll() {
         return userService.findAll()
-                .collect(Collectors.toList())
+                .collectList()
                 .map(userMapper::userListToUserListResponse)
                 .map(ResponseEntity::ok);
     }
@@ -52,6 +51,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> deleteById(@PathVariable("id") String id) {
-        return userService.deleteById(id).thenReturn(ResponseEntity.noContent().build());
+        return userService.deleteById(id)
+                .thenReturn(ResponseEntity.noContent().build());
     }
 }

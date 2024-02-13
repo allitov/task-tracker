@@ -48,4 +48,9 @@ public class DatabaseUserService implements UserService {
     public Mono<Void> deleteById(@NonNull String id) {
         return userRepository.deleteById(id);
     }
+
+    @Override
+    public Flux<User> findAllByIdsIn(@NonNull Iterable<String> ids) {
+        return userRepository.findAllById(ids);
+    }
 }

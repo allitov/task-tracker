@@ -15,4 +15,6 @@ public interface UserService {
     Mono<User> update(User user);
 
     Mono<Void> deleteById(String id);
+
+    Flux<User> findAllByIdsIn(Iterable<String> ids);
 }
