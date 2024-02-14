@@ -12,9 +12,11 @@ public interface TaskService {
 
     Mono<Task> create(Task task);
 
-    Mono<Task> updateById(String id, Task task);
+    Mono<Task> update(Task task);
 
     Mono<Task> addObserverById(String taskId, String observerId);
+
+    Mono<Task> removeObserverById(String taskId, String observerId);
 
     Mono<Void> deleteById(String id);
 }
