@@ -5,6 +5,7 @@ import com.allitov.tasktracker.web.dto.request.UserRequest;
 import com.allitov.tasktracker.web.dto.response.UserListResponse;
 import com.allitov.tasktracker.web.dto.response.UserResponse;
 import com.allitov.tasktracker.web.mapper.UserMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,14 +38,14 @@ public class UserController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Void>> create(@RequestBody UserRequest request) {
+    public Mono<ResponseEntity<Void>> create(@Valid @RequestBody UserRequest request) {
         return userService.create(userMapper.requestToUser(request))
                 .map(u -> ResponseEntity.created(URI.create("/api/v1/user/" + u.getId())).build());
     }
 
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Void>> updateById(@PathVariable("id") String id,
-                                                 @RequestBody UserRequest request) {
+                                                 @Valid @RequestBody UserRequest request) {
         return userService.update(userMapper.requestToUser(id, request))
                 .thenReturn(ResponseEntity.noContent().build());
     }

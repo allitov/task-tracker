@@ -6,6 +6,7 @@ import com.allitov.tasktracker.web.dto.request.CreateTaskRequest;
 import com.allitov.tasktracker.web.dto.response.TaskListResponse;
 import com.allitov.tasktracker.web.dto.response.TaskResponse;
 import com.allitov.tasktracker.web.mapper.TaskMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,14 +40,14 @@ public class TaskController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Void>> create(@RequestBody CreateTaskRequest request) {
+    public Mono<ResponseEntity<Void>> create(@Valid @RequestBody CreateTaskRequest request) {
         return taskService.create(taskMapper.createRequestToTask(request))
                 .map(t -> ResponseEntity.created(URI.create("/api/v1/user/" + t.getId())).build());
     }
 
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Void>> updateById(@PathVariable("id") String id,
-                                                 @RequestBody ChangeTaskRequest request) {
+                                                 @Valid @RequestBody ChangeTaskRequest request) {
         return taskService.update(taskMapper.changeReuqestToTask(id, request))
                 .thenReturn(ResponseEntity.noContent().build());
     }
