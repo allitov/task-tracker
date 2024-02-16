@@ -9,6 +9,8 @@ public class ExceptionMessage {
 
     public final String USER_INVALID_USERNAME = "Username must not be blank";
 
+    public final String USER_NULL_EMAIL = "Email must be specified";
+
     public final String USER_INVALID_EMAIL = "Invalid email format";
 
     public final String TASK_BY_ID_NOT_FOUND = "Task with id '%s' not found";

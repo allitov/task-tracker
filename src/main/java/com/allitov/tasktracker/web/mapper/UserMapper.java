@@ -23,11 +23,11 @@ public interface UserMapper {
 
     UserResponse userToResponse(User user);
 
-    List<UserResponse> userListToResponseList(List<User> users);
+    List<UserResponse> userIterableToResponseList(Iterable<User> users);
 
     default UserListResponse userListToUserListResponse(List<User> users) {
         UserListResponse response = new UserListResponse();
-        response.setUsers(userListToResponseList(users));
+        response.setUsers(userIterableToResponseList(users));
 
         return response;
     }

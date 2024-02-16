@@ -1,7 +1,7 @@
 package com.allitov.tasktracker.web.dto.response;
 
 import com.allitov.tasktracker.model.entity.Task;
-import com.allitov.tasktracker.model.entity.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,21 +15,27 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskResponse {
 
+    @Schema(example = "1")
     private String id;
 
+    @Schema(example = "Task name")
     private String name;
 
+    @Schema(example = "Task description")
     private String description;
 
+    @Schema(example = "1970-01-01T00:00:00Z")
     private Instant createdAt;
 
+    @Schema(example = "1970-01-01T00:00:00Z")
     private Instant updatedAt;
 
+    @Schema(example = "TODO")
     private Task.TaskStatus status;
 
-    private User author;
+    private UserResponse author;
 
-    private User assignee;
+    private UserResponse assignee;
 
-    private List<User> observers = new ArrayList<>();
+    private List<UserResponse> observers = new ArrayList<>();
 }
