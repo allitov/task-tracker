@@ -1,5 +1,7 @@
 version: '3'
 
+name: task-tracker-env
+
 services:
   mongodb:
     container_name: mongodb_container
