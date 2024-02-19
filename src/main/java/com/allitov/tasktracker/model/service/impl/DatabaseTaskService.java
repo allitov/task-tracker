@@ -47,23 +47,26 @@ public class DatabaseTaskService implements TaskService {
                     Instant now = Instant.now();
                     taskToSave.setCreatedAt(now);
                     taskToSave.setUpdatedAt(now);
-                    return taskRepository.save(task);
+                    return taskRepository.save(taskToSave);
                 });
     }
 
     @Override
-    public Mono<Task> update(@NonNull Task task) {
-        return findById(task.getId()).flatMap(foundTask -> {
-            if (!foundTask.equals(task)) {
-                foundTask.setName(task.getName());
-                foundTask.setDescription(task.getDescription());
-                foundTask.setStatus(task.getStatus());
-                foundTask.setAssignee(task.getAssignee());
-                foundTask.setUpdatedAt(Instant.now());
-                return taskRepository.save(foundTask);
-            }
-            return Mono.just(foundTask);
-        });
+    public Mono<Task> update(Task task) {
+        return Mono
+                .zip(
+                        findById(task.getId()),
+                        userService.findById(task.getAssigneeId()),
+                        (foundTask, assignee) -> {
+                            foundTask.setName(task.getName());
+                            foundTask.setDescription(task.getDescription());
+                            foundTask.setStatus(task.getStatus());
+                            foundTask.setAssigneeId(assignee.getId());
+                            foundTask.setUpdatedAt(Instant.now());
+                            return foundTask;
+                        }
+                )
+                .flatMap(taskRepository::save);
     }
 
     @Override

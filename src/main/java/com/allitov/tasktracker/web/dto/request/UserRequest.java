@@ -18,7 +18,7 @@ public class UserRequest {
     @Schema(example = "Username")
     private String username;
 
-    @NotNull(message = ExceptionMessage.USER_NULL_EMAIL)
+    @NotBlank(message = ExceptionMessage.USER_NULL_EMAIL)
     @Email(message = ExceptionMessage.USER_INVALID_EMAIL)
     @Schema(example = "example@email.com")
     private String email;

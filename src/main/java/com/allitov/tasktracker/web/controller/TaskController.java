@@ -128,7 +128,9 @@ public class TaskController {
     @PostMapping
     public Mono<ResponseEntity<Void>> create(@Valid @RequestBody CreateTaskRequest request) {
         return taskService.create(taskMapper.createRequestToTask(request))
-                .map(t -> ResponseEntity.created(URI.create("/api/v1/user/" + t.getId())).build());
+                .map(createdTask ->
+                        ResponseEntity.created(URI.create("/api/v1/user/" + createdTask.getId())).build()
+                );
     }
 
     @Operation(
