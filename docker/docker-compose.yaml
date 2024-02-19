@@ -1,0 +1,30 @@
+version: '3'
+
+name: task-tracker
+
+services:
+  mongodb:
+    container_name: mongodb_container
+    image: mongo:6.0.13
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: task_tracker_db
+
+  task-tracker:
+    container_name: task_tracker_container
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+    ports:
+      - "8080:8080"
+    environment:
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: root
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_DBNAME: task_tracker_db
