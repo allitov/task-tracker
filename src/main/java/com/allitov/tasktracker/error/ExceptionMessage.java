@@ -13,6 +13,12 @@ public class ExceptionMessage {
 
     public final String USER_INVALID_EMAIL = "Invalid email format";
 
+    public final String USER_INVALID_PASSWORD = "Password must be specified";
+
+    public final String USER_NULL_ROLES = "Roles must be specified";
+
+    public final String USER_INVALID_ROLES = "Invalid roles. Must be any of ['USER', 'MANAGER']";
+
     public final String TASK_BY_ID_NOT_FOUND = "Task with id '%s' not found";
 
     public final String TASK_INVALID_NAME = "Task name must not be blank";

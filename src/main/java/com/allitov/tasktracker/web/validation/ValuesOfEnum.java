@@ -1,15 +1,17 @@
-package com.allitov.tasktracker.validation;
+package com.allitov.tasktracker.web.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValueOfEnumValidator.class)
-public @interface ValueOfEnum {
+@Constraint(validatedBy = ValuesOfEnumValidator.class)
+public @interface ValuesOfEnum {
 
     Class<? extends Enum<?>> enumClass();
 
