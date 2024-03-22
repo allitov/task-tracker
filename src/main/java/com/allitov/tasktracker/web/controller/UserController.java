@@ -1,6 +1,7 @@
 package com.allitov.tasktracker.web.controller;
 
 import com.allitov.tasktracker.model.service.UserService;
+import com.allitov.tasktracker.security.AppUserDetails;
 import com.allitov.tasktracker.web.dto.request.UserRequest;
 import com.allitov.tasktracker.web.dto.response.ErrorResponse;
 import com.allitov.tasktracker.web.dto.response.UserListResponse;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -223,6 +225,7 @@ public class UserController {
     })
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Void>> updateById(@PathVariable("id") String id,
+                                                 @AuthenticationPrincipal AppUserDetails userDetails,
                                                  @Valid @RequestBody UserRequest request) {
         return userService.update(userMapper.requestToUser(id, request))
                 .thenReturn(ResponseEntity.noContent().build());
@@ -264,7 +267,8 @@ public class UserController {
             )
     })
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteById(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<Void>> deleteById(@PathVariable("id") String id,
+                                                 @AuthenticationPrincipal AppUserDetails userDetails) {
         return userService.deleteById(id)
                 .thenReturn(ResponseEntity.noContent().build());
     }

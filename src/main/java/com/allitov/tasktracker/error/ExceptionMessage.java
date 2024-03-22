@@ -9,6 +9,8 @@ public class ExceptionMessage {
 
     public final String ACCESS_DENIED = "No required authorities";
 
+    public final String USER_DATA_ILLEGAL_ACCESS = "User with id = '%s' cannot change data of user with id = '%s'";
+
     public final String USER_BY_ID_NOT_FOUND = "User with id '%s' not found";
 
     public final String USER_BY_USERNAME_NOT_FOUND = "User with username '%s' not found";
