@@ -19,7 +19,7 @@ public class OpenApiConfiguration {
 
         Info info = new Info()
                 .title("Task Tracker API")
-                .version("1.0")
+                .version("2.0")
                 .description("API for task tracker services");
 
         return new OpenAPI().info(info).servers(List.of(localhostServer));

@@ -7,6 +7,8 @@ public class ExceptionMessage {
 
     public final String USER_BY_ID_NOT_FOUND = "User with id '%s' not found";
 
+    public final String USER_BY_USERNAME_NOT_FOUND = "User with username '%s' not found";
+
     public final String USER_INVALID_USERNAME = "Username must not be blank";
 
     public final String USER_NULL_EMAIL = "Email must be specified";
