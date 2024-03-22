@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v2/user")
 @RequiredArgsConstructor
-@Tag(name = "User controller", description = "Uer API version 2.0")
+@Tag(name = "User controller", description = "User API version 2.0")
 public class UserController {
 
     private final UserService userService;
@@ -34,15 +35,37 @@ public class UserController {
 
     @Operation(
             summary = "Get all users",
-            description = "Get all users. Returns a list of users"
+            description = "Get all users. Returns a list of users. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 200 and users list if everything is successful",
+                    description = "Returns status 200 and users list if everything completed successfully",
                     responseCode = "200",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = UserListResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
                                     mediaType = "application/json"
                             )
                     }
@@ -58,18 +81,40 @@ public class UserController {
 
     @Operation(
             summary = "Get user by id",
-            description = "Get user by id. Returns user with requested id",
+            description = "Get user by id. Returns user with requested id. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 200 and user if everything is successful",
+                    description = "Returns status 200 and user if everything completed successfully",
                     responseCode = "200",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = UserResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
                                     mediaType = "application/json"
                             )
                     }
@@ -98,7 +143,7 @@ public class UserController {
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 201 and created user location if everything is successful",
+                    description = "Returns status 201 and created user location if everything completed successfully",
                     responseCode = "201",
                     headers = {
                             @Header(name = "Location", description = "Created user location")
@@ -118,24 +163,46 @@ public class UserController {
     @PostMapping
     public Mono<ResponseEntity<Void>> create(@Valid @RequestBody UserRequest request) {
         return userService.create(userMapper.requestToUser(request))
-                .map(u -> ResponseEntity.created(URI.create("/api/v1/user/" + u.getId())).build());
+                .map(u -> ResponseEntity.created(URI.create("/api/v2/user/" + u.getId())).build());
     }
 
     @Operation(
             summary = "Update user by id",
-            description = "Update user by id. Returns status 204",
+            description = "Update user by id. Returns status 204. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 204 if everything is successful",
+                    description = "Returns status 204 if everything completed successfully",
                     responseCode = "204"
             ),
             @ApiResponse(
                     description = "Returns status 400 and error message if request has invalid values",
                     responseCode = "400",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = ErrorResponse.class),
@@ -163,15 +230,37 @@ public class UserController {
 
     @Operation(
             summary = "Delete user by id",
-            description = "Delete user by id. Returns status 204",
+            description = "Delete user by id. Returns status 204. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 204 if everything is successful",
+                    description = "Returns status 204 if everything completed successfully",
                     responseCode = "204"
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
             )
     })
     @DeleteMapping("/{id}")
