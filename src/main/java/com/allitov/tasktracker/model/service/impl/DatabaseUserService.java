@@ -7,6 +7,8 @@ import com.allitov.tasktracker.model.repository.UserRepository;
 import com.allitov.tasktracker.model.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,6 +18,8 @@ import reactor.core.publisher.Mono;
 public class DatabaseUserService implements UserService {
 
     private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Flux<User> findAll() {
@@ -33,7 +37,19 @@ public class DatabaseUserService implements UserService {
     }
 
     @Override
+    public Mono<User> findByUsername(@NonNull String username) {
+        return userRepository.findByUsername(username)
+                .switchIfEmpty(
+                        Mono.error(
+                                new UsernameNotFoundException(ExceptionMessage.USER_BY_USERNAME_NOT_FOUND)
+                        )
+                );
+    }
+
+    @Override
     public Mono<User> create(@NonNull User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userRepository.save(user);
     }
 

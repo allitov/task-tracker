@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +26,9 @@ import java.net.URI;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/task")
+@RequestMapping("/api/v2/task")
 @RequiredArgsConstructor
+@Tag(name = "Task controller", description = "Task API version 2.0")
 public class TaskController {
 
     private final TaskService taskService;
@@ -34,15 +37,37 @@ public class TaskController {
 
     @Operation(
             summary = "Get all tasks",
-            description = "Get all tasks. Returns a list of tasks"
+            description = "Get all tasks. Returns a list of tasks. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 200 and tasks list if everything is successful",
+                    description = "Returns status 200 and tasks list if everything completed successfully",
                     responseCode = "200",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = TaskListResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
                                     mediaType = "application/json"
                             )
                     }
@@ -58,18 +83,40 @@ public class TaskController {
 
     @Operation(
             summary = "Get task by id",
-            description = "Get task by id. Returns task with requested id",
+            description = "Get task by id. Returns task with requested id. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 200 and task if everything is successful",
+                    description = "Returns status 200 and task if everything completed successfully",
                     responseCode = "200",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = TaskResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
                                     mediaType = "application/json"
                             )
                     }
@@ -94,11 +141,13 @@ public class TaskController {
 
     @Operation(
             summary = "Create task",
-            description = "Create task. Returns status 201 and created task location"
+            description = "Create task. Returns status 201 and created task location. " +
+                    "Requires any of the authorities: ['MANAGER']",
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 201 and created task location if everything is successful",
+                    description = "Returns status 201 and created task location if everything completed successfully",
                     responseCode = "201",
                     headers = {
                             @Header(name = "Location", description = "Created task location")
@@ -107,6 +156,26 @@ public class TaskController {
             @ApiResponse(
                     description = "Returns status 400 and error message if request has invalid values",
                     responseCode = "400",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = ErrorResponse.class),
@@ -129,25 +198,47 @@ public class TaskController {
     public Mono<ResponseEntity<Void>> create(@Valid @RequestBody CreateTaskRequest request) {
         return taskService.create(taskMapper.createRequestToTask(request))
                 .map(createdTask ->
-                        ResponseEntity.created(URI.create("/api/v1/user/" + createdTask.getId())).build()
+                        ResponseEntity.created(URI.create("/api/v2/user/" + createdTask.getId())).build()
                 );
     }
 
     @Operation(
             summary = "Update task by id",
-            description = "Update task by id. Returns status 204",
+            description = "Update task by id. Returns status 204. " +
+                    "Requires any of the authorities: ['MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 204 if everything is successful",
+                    description = "Returns status 204 if everything completed successfully",
                     responseCode = "204"
             ),
             @ApiResponse(
                     description = "Returns status 400 and error message if request has invalid values",
                     responseCode = "400",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = ErrorResponse.class),
@@ -176,19 +267,41 @@ public class TaskController {
 
     @Operation(
             summary = "Add observer by id",
-            description = "Add observer by id. Returns status 200 and updated task",
+            description = "Add observer by id. Returns status 200 and updated task. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1"),
                     @Parameter(name = "observerId", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 200 and updated task if everything is successful",
+                    description = "Returns status 200 and updated task if everything completed successfully",
                     responseCode = "200",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = TaskResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
                                     mediaType = "application/json"
                             )
                     }
@@ -215,19 +328,41 @@ public class TaskController {
 
     @Operation(
             summary = "Remove observer by id",
-            description = "Remove observer by id. Returns status 200 and updated task",
+            description = "Remove observer by id. Returns status 200 and updated task. " +
+                    "Requires any of the authorities: ['USER', 'MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1"),
                     @Parameter(name = "observerId", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 200 and updated task if everything is successful",
+                    description = "Returns status 200 and updated task if everything completed successfully",
                     responseCode = "200",
                     content = {
                             @Content(
                                     schema = @Schema(implementation = TaskResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
                                     mediaType = "application/json"
                             )
                     }
@@ -254,15 +389,37 @@ public class TaskController {
 
     @Operation(
             summary = "Delete task by id",
-            description = "Delete task by id. Returns status 204",
+            description = "Delete task by id. Returns status 204. " +
+                    "Requires any of the authorities: ['MANAGER']",
             parameters = {
                     @Parameter(name = "id", example = "1")
-            }
+            },
+            security = @SecurityRequirement(name = "Basic authorization")
     )
     @ApiResponses({
             @ApiResponse(
-                    description = "Returns status 204 if everything is successful",
+                    description = "Returns status 204 if everything completed successfully",
                     responseCode = "204"
+            ),
+            @ApiResponse(
+                    description = "Returns status 401 and error message if user is not authorized",
+                    responseCode = "401",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    description = "Returns status 403 and error message if user has no required authorities",
+                    responseCode = "403",
+                    content = {
+                            @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    mediaType = "application/json"
+                            )
+                    }
             )
     })
     @DeleteMapping("/{id}")
