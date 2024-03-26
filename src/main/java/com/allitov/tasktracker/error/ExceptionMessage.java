@@ -35,7 +35,7 @@ public class ExceptionMessage {
 
     public final String TASK_NULL_STATUS = "Task status must be specified";
 
-    public final String TASK_INVALID_STATUS = "Task status must be any of [TODO, IN_PROGRESS, DONE]";
+    public final String TASK_INVALID_STATUS = "Task status must be any of ['TODO', 'IN_PROGRESS', 'DONE']";
 
     public final String TASK_NULL_AUTHOR_ID = "Task author id must be specified";
 
